@@ -15,14 +15,20 @@ function App() {
 
     fetch(url)
       .then(res => res.json())
-      .then(data => setProducts(data));
+      .then(data => {
+        const withRatings = data.map((p, i) => ({
+          ...p,
+          rating: p.rating || [4.2, 3.8, 5, 4.0][i % 4], // fallback ratings
+        }));
+        setProducts(withRatings);
+      });
   }, [category, sortBy]);
 
   return (
-    <div className="App">
+    <div className="App" style={{ backgroundColor: "#1c1c1c", color: "#fff", minHeight: "100vh", padding: "20px" }}>
       <h1 style={{ color: "red", textAlign: "center" }}>🛒 Product Listing</h1>
 
-      <div>
+      <div style={{ marginBottom: "20px", display: "flex", gap: "10px", justifyContent: "center" }}>
         <select onChange={(e) => setCategory(e.target.value)}>
           <option value="">All Categories</option>
           <option value="Electronics">Electronics</option>
@@ -36,18 +42,19 @@ function App() {
           <option value="desc">Price: High to Low</option>
         </select>
       </div>
+
       <div className="product-list">
         {products.map((p, i) => (
           <div key={i} className="product">
             <img
               src={`http://localhost:5000${p.image}`}
               alt={p.name}
-              width="100"
-              onError={(e) => (e.target.src = "https://via.placeholder.com/100")}
+              onError={(e) => (e.target.src = "https://via.placeholder.com/150")}
             />
             <h3>{p.name}</h3>
             <p>₹{p.price}</p>
             <p>{p.category}</p>
+            <p>⭐ {p.rating}</p>
           </div>
         ))}
       </div>
