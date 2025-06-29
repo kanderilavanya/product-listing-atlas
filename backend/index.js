@@ -1,40 +1,29 @@
-// Load environment variables from .env
 require('dotenv').config();
-
-// Import required packages
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
-
-// Import product routes
 const productRoutes = require('./routes/productRoutes');
 
-// Initialize app
 const app = express();
 
-// ========================
-// ✅ Middleware
-// ========================
+// ✅ Allow Netlify and Localhost via CORS
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGIN || '*', // Allow all for now
+  origin: ['https://productlistingatlas.netlify.app', 'http://localhost:3000'],
 }));
+
 app.use(express.json());
 
-// Serve static images
+// ✅ Serve static images
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
 
-// ========================
 // ✅ Routes
-// ========================
 app.get('/', (req, res) => {
   res.send('<h2>✅ Backend is running. Visit <a href="/api/products">/api/products</a></h2>');
 });
 app.use('/api', productRoutes);
 
-// ========================
-// ✅ MongoDB + Start Server
-// ========================
+// ✅ MongoDB + Server Start
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
@@ -49,7 +38,7 @@ mongoose.connect(MONGO_URI, {
     const isRender = !!process.env.PORT;
     const mode = isRender ? 'Render (Production)' : 'Local (Development)';
     const url = isRender
-      ? `https://your-backend-name.onrender.com`  // Replace with actual Render URL
+      ? `https://product-backend-wqun.onrender.com`
       : `http://localhost:${PORT}`;
 
     console.log(`🚀 Server running in ${mode}`);
