@@ -7,7 +7,7 @@ function App() {
   const [sortBy, setSortBy] = useState('');
 
   useEffect(() => {
-    let url = 'http://localhost:5000/api/products';
+    let url = `${process.env.REACT_APP_API_URL}/api/products`;
     const params = [];
     if (category) params.push(`category=${category}`);
     if (sortBy) params.push(`sortBy=${sortBy}`);
@@ -18,9 +18,12 @@ function App() {
       .then(data => {
         const withRatings = data.map((p, i) => ({
           ...p,
-          rating: p.rating || [4.2, 3.8, 5, 4.0][i % 4], // fallback ratings
+          rating: p.rating || [4.2, 3.8, 5, 4.0][i % 4],
         }));
         setProducts(withRatings);
+      })
+      .catch((err) => {
+        console.error("❌ Failed to fetch products:", err);
       });
   }, [category, sortBy]);
 
@@ -47,7 +50,7 @@ function App() {
         {products.map((p, i) => (
           <div key={i} className="product">
             <img
-              src={`http://localhost:5000${p.image}`}
+              src={`${process.env.REACT_APP_API_URL}${p.image}`}
               alt={p.name}
               onError={(e) => (e.target.src = "https://via.placeholder.com/150")}
             />
